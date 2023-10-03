@@ -2,6 +2,27 @@ const User = require('../models/user')
 const bcrypt = require("bcrypt")
 const jwt = require("../utils/jwt")
 
+// LogIn
+
+const login = async (req, res) => {
+  const { identification, password } = req.body;
+  try {
+    const userStore = await User.findOne({ identification: identification });
+    if (!userStore) {
+      throw new Error("El usuario no existe");
+    }
+    const check = await bcrypt.compare(password, userStore.password);
+    if (!check) {
+      throw new Error("Contraseña incorrecta");
+    }
+    res.status(200).send({
+      access: jwt.createAccessToken(userStore),
+      refresh: jwt.createRefreshToken(userStore)
+    });
+  } catch (error) {
+    res.status(400).json({error: error.message})
+  }
+}
 
 // Register User
 
@@ -56,6 +77,7 @@ const deleteUser =async (req, res) => {
   }
 
 module.exports = {
+    login,
     register,
     getAllUsers,
     deleteUser

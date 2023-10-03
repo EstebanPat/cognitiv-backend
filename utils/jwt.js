@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const createAccessToken = (user) => {
-  console.log(user);
   const expToken = new Date();
   expToken.setHours(expToken.getHours() + 3);
   const payload = {
@@ -11,8 +10,6 @@ const createAccessToken = (user) => {
     iat: Date.now(),
     exp: expToken.getTime(),
   };
-
-  console.log("accessToken del jwt: ", payload.user_id);
   return jwt.sign(payload, process.env.JWT_SECRET_KEY);
 };
 
