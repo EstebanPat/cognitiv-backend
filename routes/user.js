@@ -7,5 +7,6 @@ const user = require("../models/user");
 router.post("/signup", userController.register)
 router.get("/", userController.getAllUsers)
 router.delete("/delete/:userId", userController.deleteUser)
+
 module.exports = router
 
