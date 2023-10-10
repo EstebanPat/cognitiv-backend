@@ -8,6 +8,9 @@ const createSuscription = async (req, res) => {
  
     const { user_id, membership_id, duration } = req.body;
     const files = req.files;
+    const actual_date = new Date();
+    const exp_date = new Date();
+    actual_date.setDate(actual_date.getDate() - 1)
     const membershipExists = await Membership.exists({ _id: membership_id }) 
     const userExists = await User.exists({ _id: user_id })
     if (membershipExists && userExists) {
@@ -15,7 +18,7 @@ const createSuscription = async (req, res) => {
         if (duration !== null && user_id !== null && membership_id !== null && files !== null) {
             const new_suscription = await Suscription({
                 user_id, membership_id, duration, voucher: files.map(file=>img.getImageUrl(file.path.replaceAll('\\', '/' ))),
-                active: false
+                start_date: actual_date, expiration_date: exp_date.setMonth(exp_date.getMonth() +12)
             })
     
             const suscriptionDB = await new_suscription.save()
@@ -40,7 +43,18 @@ const getAllSuscriptions = async (req, res) => {
     }
 }
 
+const deleteSuscription = async (req, res) => {
+    try {
+        const { suscriptionId } = req.params
+        await Suscription.findByIdAndDelete(suscriptionId)
+        res.status(200).json({ message: "Suscripcion Eliminada"})
+      } catch (error) {
+        res.status(400).json(error)
+      } 
+}
+
 module.exports = {
     createSuscription,
     getAllSuscriptions,
+    deleteSuscription
 }
