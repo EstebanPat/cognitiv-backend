@@ -7,7 +7,7 @@ const img = require("../utils/image")
 const createSuscription = async (req, res) => {
  
     const { user_id, membership_id, duration } = req.body;
-    const files = req.files;
+    const files = req.file.path;
     const actual_date = new Date();
     const exp_date = new Date();
     actual_date.setDate(actual_date.getDate() - 1)
@@ -16,11 +16,12 @@ const createSuscription = async (req, res) => {
     if (membershipExists && userExists) {
     
         if (duration !== null && user_id !== null && membership_id !== null && files !== null) {
+            vouch = files.replaceAll("\\", "/")
             const new_suscription = await Suscription({
-                user_id, membership_id, duration, voucher: files.map(file=>img.getImageUrl(file.path.replaceAll('\\', '/' ))),
+                user_id, membership_id, duration, voucher: "/" + vouch,
                 start_date: actual_date, expiration_date: exp_date.setMonth(exp_date.getMonth() +12)
             })
-    
+            
             const suscriptionDB = await new_suscription.save()
             res.status(201).json(suscriptionDB)
         }else{
