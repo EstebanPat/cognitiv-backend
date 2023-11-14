@@ -2,11 +2,11 @@ const Membership = require('../models/membership')
 
 const createMembership = async (req, res) =>{
 
-    const { type, description, price } = req.body
+    const { type, description, addons, price } = req.body
 
-    if(type !== null && description !== null && price !== null){
+    if(type !== null && description !== null && price !== null && addons !== null){
         const new_membership = await Membership({
-            type, description, price
+            type, description, addons, price
         }) 
 
         const membershipDB = await new_membership.save()
@@ -27,6 +27,20 @@ const getAllMemberships = async (req, res) => {
     }
 }
 
+const getById = async (req, res) =>{
+    const {membId} = req.params;
+    try {
+      const response = await Membership.findById(membId)  
+      if(!response){
+        throw new Error("La membresía no existe")
+      }else{
+        res.status(200).json(response);
+      }
+    } catch (error) {
+      res.status(400).json(error)
+    } 
+};
+
 
 //Eliminar Categoria
 
@@ -42,6 +56,7 @@ const deleteMembership = async (req, res) => {
 
 module.exports = {
     createMembership,
+    getById,
     getAllMemberships,
     deleteMembership
 }
