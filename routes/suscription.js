@@ -16,6 +16,7 @@ const upload = multer({ storage: storage });
 
 router.post('/new-suscription', upload.single("voucher"), suscriptionController.createSuscription)
 router.get('/',  suscriptionController.getAllSuscriptions)
+router.get('/:subId',  suscriptionController.getById)
 router.delete("/delete/:suscriptionId", suscriptionController.deleteSuscription)
 
 module.exports = router;
