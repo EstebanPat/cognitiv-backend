@@ -66,6 +66,20 @@ const getAllUsers = async(req, res) => {
       
 };
 
+const getById = async (req, res) =>{
+  const {userId} = req.params;
+  try {
+    const response = await User.findById(userId)  
+    if(!response){
+      throw new Error("El usuario no existe")
+    }else{
+      res.status(200).json(response);
+    }
+  } catch (error) {
+    res.status(400).json(error)
+  } 
+};
+
 const deleteUser =async (req, res) => {
     try {
       const { userId } = req.params
@@ -79,6 +93,7 @@ const deleteUser =async (req, res) => {
 module.exports = {
     login,
     register,
+    getById,
     getAllUsers,
     deleteUser
 }
