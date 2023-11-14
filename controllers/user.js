@@ -2,6 +2,7 @@ const User = require('../models/user')
 const bcrypt = require("bcrypt")
 const jwt = require("../utils/jwt")
 
+const sendEmailController = require('./sendEmail')
 // LogIn
 
 const login = async (req, res) => {
@@ -50,6 +51,7 @@ const register = async (req, res) => {
             try {
                 
                 const userDB = await new_user.save()
+                await sendEmailController.sendEmail(email, names)
                 res.status(201).json(userDB)
             } catch (error) {
                 res.status(400).json({error: "La identificacion ya fue registrada"})
