@@ -15,6 +15,11 @@ const login = async (req, res) => {
     if (!check) {
       throw new Error("Contraseña incorrecta");
     }
+
+    if(userStore.active === false){
+      throw new Error("Debe activar su cuenta para acceder");
+    }
+
     res.status(200).send({
       access: jwt.createAccessToken(userStore),
       refresh: jwt.createRefreshToken(userStore)
