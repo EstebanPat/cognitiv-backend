@@ -51,7 +51,7 @@ const register = async (req, res) => {
             try {
                 
                 const userDB = await new_user.save()
-                await sendEmailController.sendEmail(email, names)
+                await sendEmailController.sendEmail(userDB)
                 res.status(201).json(userDB)
             } catch (error) {
                 res.status(400).json({error: "La identificacion ya fue registrada"})
@@ -97,10 +97,21 @@ const deleteUser =async (req, res) => {
     } 
   }
 
+const activateAccount = async (req, res) => {
+  try {
+    const { user_id } = req.user
+    await User.findByIdAndUpdate(user_id, { active: true })
+    res.status(200).json({ message: "Usuario activado" })
+  } catch (error) {
+    res.status(400).json(error);
+  }
+}
+
 module.exports = {
     login,
     register,
     getById,
     getAllUsers,
-    deleteUser
+    deleteUser,
+    activateAccount
 }

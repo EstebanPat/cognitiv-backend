@@ -1,37 +1,36 @@
-const jwt = require("jsonwebtoken");
+const jwt = require("../utils/jwt");
+const User = require("../models/user");
 require('dotenv').config();
 
-const createAccessToken = (user) => {
-  console.log(user);
-  const expToken = new Date();
-  expToken.setHours(expToken.getHours() + 3);
-  const payload = {
-    token_type: "access",
-    user_id: user._id,
-    iat: Date.now(),
-    exp: expToken.getTime(),
-  };
+const ensureAuth = async (req, res, next) => {
+  const { authorization } = req.headers;
+  if (!authorization || !authorization.startsWith("Bearer ")) {
+    return res.status(403).send({ msg: "La petición no tiene la cabecera de autenticación" });
+  }
+  const token = authorization.split(" ")[1];
+  try {
+    // Cambiar "decoded" a "verify" para validar el token
+    const payload = jwt.verify(token, process.env.JWT_SECRET_KEY);  
+    const { expiration_date, user_id } = payload;
+    const currentTime = Date.now();
 
-  console.log("accessToken del jwt: ", payload.user_id);
-  return jwt.sign(payload, process.env.JWT_SECRET_KEY);
+    if (expiration_date <= currentTime) {
+      // El token ha expirado, renovar el token de acceso
+      const userStorage = await User.findOne({ _id: user_id });
+      const accessToken = jwt.createAccessToken(userStorage);
+      req.user = { ...payload, expiration_date: accessToken.exp };
+      res.setHeader("Authorization", `Bearer ${accessToken}`);
+    } else {
+      // El token aún es válido, establecer el usuario en req.user
+      req.user = payload;
+    }
+    
+    next();
+  } catch (error) {
+    return res.status(400).send({ msg: "Token inválido" });
+  }
 };
 
-const createRefreshToken = (user) => {
-  const expToken = new Date();
-  expToken.setHours(expToken.getHours() + 3);
-  const payload = {
-    token_type: "refresh",
-    user_id: user._id,
-    iat: Date.now(),
-    exp: expToken.getTime(),
-  };
-};
-
-const verify = (token) => {
-  return jwt.verify(token, process.env.JWT_SECRET_KEY);
-};
 module.exports = {
-  createAccessToken,
-  createRefreshToken,
-  verify,
+  ensureAuth,
 };

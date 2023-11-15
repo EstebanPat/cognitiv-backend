@@ -7,6 +7,7 @@ router.post("/signup", userController.register)
 router.post("/login", userController.login)
 router.get("/", userController.getAllUsers)
 router.get("/:userId", userController.getById)
+router.patch("/activate", [ensuAuth.ensureAuth], userController.activateAccount)
 router.delete("/delete/:userId", userController.deleteUser)
 
 module.exports = router
