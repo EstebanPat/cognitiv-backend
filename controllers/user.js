@@ -15,9 +15,9 @@ const login = async (req, res) => {
       throw new Error("Contraseña incorrecta");
     }
 
-    if(userStore.active === false){
+    /* if(userStore.active === false){
       throw new Error("Debe activar su cuenta para acceder");
-    }
+    } */
 
     res.status(200).send({
       access: jwt.createAccessToken(userStore),
@@ -104,17 +104,20 @@ const activateAccount = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try{
-    const { userId } = req.user
+    const { user_id } = req.user
     const userData = req.body;
+    console.log(userData)
+
     if(userData.password){
       const enscriptar_contraseña = await bcrypt.genSalt(10);
-      const contrasena = await bcrypt.hash(password, enscriptar_contraseña)
+      const contrasena = await bcrypt.hash(userData.password, enscriptar_contraseña)
       userData.password = contrasena
     }
-    await User.findByIdAndUpdate(userId, userData);
-    res.status(200).json({ message: "Usuario actualizado" })
+    await User.findByIdAndUpdate(user_id, userData);
+    res.status(200).json({ message: "Usuario actualizado",  })
   }catch (error){
-    res.status(400).json(error);
+    console.log(error)
+    res.status(400).json({error: error.message})
   }
 };
 
