@@ -8,7 +8,9 @@ router.post("/login", userController.login)
 router.get("/", userController.getAllUsers)
 router.get("/:userId", userController.getById)
 router.patch("/activate", [ensuAuth.ensureAuth], userController.activateAccount)
-router.delete("/delete/:userId", userController.deleteUser)
+router.delete("/delete/:userId", [ensuAuth.ensureAuth], userController.deleteUser)
+router.patch("/update/", [ensuAuth.ensureAuth], userController.updateUser)
+router.post("/forgotpass/:identification", userController.forgotPassword)
 
 module.exports = router
 

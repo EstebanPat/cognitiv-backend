@@ -1,9 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require("bcrypt")
 const jwt = require("../utils/jwt")
-
 const sendEmailController = require('./sendEmail')
-// LogIn
 
 const login = async (req, res) => {
   const { identification, password } = req.body;
@@ -17,9 +15,9 @@ const login = async (req, res) => {
       throw new Error("Contraseña incorrecta");
     }
 
-    if(userStore.active === false){
+    /* if(userStore.active === false){
       throw new Error("Debe activar su cuenta para acceder");
-    }
+    } */
 
     res.status(200).send({
       access: jwt.createAccessToken(userStore),
@@ -30,13 +28,10 @@ const login = async (req, res) => {
   }
 }
 
-// Register User
-
 const register = async (req, res) => {
     const { names, lastnames, email, password, phone, genre, birthDay, schooling, documentType
     , identification, attendant} = req.body;
     
-
     if(names  && lastnames  && email  && password  && phone  &&
         genre  && birthDay  && schooling  && documentType  && 
         identification ){
@@ -107,11 +102,46 @@ const activateAccount = async (req, res) => {
   }
 }
 
+const updateUser = async (req, res) => {
+  try{
+    const { user_id } = req.user
+    const userData = req.body;
+    console.log(userData)
+
+    if(userData.password){
+      const enscriptar_contraseña = await bcrypt.genSalt(10);
+      const contrasena = await bcrypt.hash(userData.password, enscriptar_contraseña)
+      userData.password = contrasena
+    }
+    await User.findByIdAndUpdate(user_id, userData);
+    res.status(200).json({ message: "Usuario actualizado",  })
+  }catch (error){
+    console.log(error)
+    res.status(400).json({error: error.message})
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { identification } = req.params;
+    const user = await User.findOne({ identification: identification });
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+    await sendEmailController.sendForgotEmail(user)
+    res.status(200).json({ message: 'Correo enviado' });
+  } catch (error) {
+    res.status(400).json({error: error.message})
+  }
+};
+
 module.exports = {
     login,
     register,
     getById,
     getAllUsers,
     deleteUser,
-    activateAccount
+    activateAccount,
+    updateUser,
+    forgotPassword
 }
