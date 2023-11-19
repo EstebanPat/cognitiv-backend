@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs')
 const jwt = require("../utils/jwt")
+const logoPath = './uploads/logos/logo.png';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -40,7 +41,7 @@ const sendEmail = async (user) => {
         attachments: [
             {
                 filename: 'logo.png',
-                path: 'C:/Users/esteb/Documents/Cognitiv/server-project/uploads/logos/logo.png',
+                path: logoPath,
                 cid: 'unique@nodemailer.com'
             }
         ]
@@ -82,7 +83,7 @@ const sendForgotEmail = async (user) => {
         attachments: [
             {
                 filename: 'logo.png',
-                path: 'C:/Users/manue/OneDrive/Documentos/COGNITIV/cognitiv-backend/uploads/logos/logo.png',
+                path: logoPath,
                 cid: 'unique@nodemailer.com'
             }
         ]
