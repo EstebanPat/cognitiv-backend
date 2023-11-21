@@ -9,5 +9,5 @@ mongoose.connect(connection_string, {
             useUnifiedTopology: true
         })
         .then(()=> {
-            app.listen(process.env.PORT, () => console.log(`IP SERVER:\nhttp://${process.env.IP_SERVER}:${process.env.PORT}${process.env.API}${process.env.API_VERSION}`))
+            app.listen(process.env.PORT)
         })
