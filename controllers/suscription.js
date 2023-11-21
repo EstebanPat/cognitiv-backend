@@ -3,7 +3,6 @@ const Membership = require('../models/membership')
 const User = require('../models/user')
 const img = require("../utils/image")
 
-
 const createSuscription = async (req, res) => {
     const { user_id, membership_id, duration } = req.body;
     const files = req.file ? req.file.path : null;
@@ -66,6 +65,11 @@ const getById = async (req, res) =>{
 
 const deleteSuscription = async (req, res) => {
     try {
+        const { user_id } = req.user;
+        const auxUser = await User.findById(user_id) 
+        if(auxUser.rol !== "admin"){
+            res.status(403).send({ message: "Usuario no autorizado"})
+        }
         const { suscriptionId } = req.params
         await Suscription.findByIdAndDelete(suscriptionId)
         res.status(200).json({ message: "Suscripcion Eliminada"})
