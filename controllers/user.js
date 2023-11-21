@@ -82,15 +82,20 @@ const getById = async (req, res) =>{
   } 
 };
 
-const deleteUser =async (req, res) => {
-    try {
-      const { userId } = req.params
-      await User.findByIdAndDelete(userId)
-      res.status(200).json({ message: "Usuario eliminado"})
-    } catch (error) {
-      res.status(400).json(error)
-    } 
-  }
+const deleteUser =async (req, res) => { 
+  try { 
+    const { user_id } = req.user;
+    const auxUser = await User.findById(user_id) 
+    if(auxUser.rol !== "admin"){
+      res.status(403).send({ message: "Usuario no autorizado"})
+    }
+    const { userId } = req.params
+    await User.findByIdAndDelete(userId)
+    res.status(200).json({ message: "Usuario eliminado"})
+  } catch (error) {
+    res.status(400).json(error)
+  } 
+}
 
 const activateAccount = async (req, res) => {
   try {
@@ -114,6 +119,29 @@ const updateUser = async (req, res) => {
       userData.password = contrasena
     }
     await User.findByIdAndUpdate(user_id, userData);
+    res.status(200).json({ message: "Usuario actualizado",  })
+  }catch (error){
+    console.log(error)
+    res.status(400).json({error: error.message})
+  }
+};
+
+const updateUserAdmin = async (req, res) => {
+  try{
+    const { user_id } = req.user;
+    const auxUser = await User.findById(user_id) 
+    if(auxUser.rol !== "admin"){
+      res.status(403).send({ message: "Usuario no autorizado"})
+    }
+    const {userId} = req.params;
+    const userData = req.body;
+
+    if(userData.password){
+      const enscriptar_contraseña = await bcrypt.genSalt(10);
+      const contrasena = await bcrypt.hash(userData.password, enscriptar_contraseña)
+      userData.password = contrasena
+    }
+    await User.findByIdAndUpdate(userId, userData);
     res.status(200).json({ message: "Usuario actualizado",  })
   }catch (error){
     console.log(error)
@@ -160,5 +188,6 @@ module.exports = {
     activateAccount,
     updateUser,
     forgotPassword,
-    getMe
+    getMe,
+    updateUserAdmin
 }
