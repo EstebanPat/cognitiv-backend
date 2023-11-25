@@ -5,6 +5,7 @@ const membershipRoutes = require('./routes/membership')
 const suscriptionRoutes = require('./routes/suscription')
 const nonImTrainingRoutes = require('./routes/nonImTraining')
 const routineListRoutes = require('./routes/routineList')
+const routineRoutes = require("./routes/routine")
 
 const cors = require('cors')
 
@@ -31,6 +32,7 @@ app.use(`${process.env.API}${process.env.API_VERSION}memberships`, membershipRou
 app.use(`${process.env.API}${process.env.API_VERSION}suscriptions`, suscriptionRoutes)
 app.use(`${process.env.API}${process.env.API_VERSION}nonimtrainings`, nonImTrainingRoutes)
 app.use(`${process.env.API}${process.env.API_VERSION}routines`, routineListRoutes)
+app.use(`${process.env.API}${process.env.API_VERSION}routine`, routineRoutes)
 
 
 module.exports = app
