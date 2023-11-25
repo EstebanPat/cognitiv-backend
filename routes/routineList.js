@@ -6,6 +6,7 @@ const routineListController = require('../controllers/routineList')
 
 router.post("/new-routine", [ensuAuth.ensureAuth], routineListController.createList)
 router.get("/", routineListController.getAllRoutinesList)
+router.get("/byId", [ensuAuth.ensureAuth], routineListController.getListById)
 
 
 

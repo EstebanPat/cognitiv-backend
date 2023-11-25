@@ -34,7 +34,22 @@ const getAllRoutinesList = async (req, res) => {
     }
 }
 
+const getListById = async (req, res) =>{
+    const { user_id } = req.user;
+    try {
+      const response = await RoutineList.find({ user_id: user_id });
+      if(!response){
+        throw new Error("El usuario no existe")
+      }else{
+        res.status(200).json(response);
+      }
+    } catch (error) {
+      res.status(400).json(error)
+    } 
+  };
+
 module.exports = {
     createList,
-    getAllRoutinesList
+    getAllRoutinesList,
+    getListById
 }

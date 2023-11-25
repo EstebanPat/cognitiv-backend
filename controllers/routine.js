@@ -39,6 +39,21 @@ const createRoutine = async (order) => {
     }
 }
 
+const getRoutineById = async (req, res) => {
+    const { routineId } = req.params
+    try {
+      const response = await Routine.findById(routineId);
+      if(!response){
+        throw new Error("El usuario no existe")
+      }else{
+        res.status(200).json(response);
+      }
+    } catch (error) {
+      res.status(400).json(error)
+    }
+}
+
 module.exports = {
-    createRoutine
+    createRoutine,
+    getRoutineById
 }
