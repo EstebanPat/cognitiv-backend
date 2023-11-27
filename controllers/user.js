@@ -12,11 +12,11 @@ const login = async (req, res) => {
     }
     const check = await bcrypt.compare(password, userStore.password);
     if (!check) {
-      throw new Error("Contraseña incorrecta");
+      throw new Error("Credenciales incorrectas");
     }
 
     if(userStore.active === false){
-      throw new Error("Debe activar su cuenta para acceder");
+      throw new Error("Cuenta inactiva");
     }
 
     res.status(200).send({
@@ -90,7 +90,7 @@ const deleteUser =async (req, res) => {
       res.status(403).send({ message: "Usuario no autorizado"})
     }
     const { userId } = req.params
-    await User.findByIdAndDelete(userId)
+    await User.findByIdAndUpdate(userId, { active: false })
     res.status(200).json({ message: "Usuario eliminado"})
   } catch (error) {
     res.status(400).json(error)
