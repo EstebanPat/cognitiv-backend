@@ -28,6 +28,19 @@ const getAllTrainings = async (req, res) => {
     }
 }
 
+const getTrainingById = async (req, res) => {
+    const { trainingId } = req.params
+    try {
+      const response = await Training.findById(trainingId);
+      if(!response){
+        throw new Error("El usuario no existe")
+      }else{
+        res.status(200).json(response);
+      }
+    } catch (error) {
+      res.status(400).json(error)
+    }
+}
 const deleteTraining = async (req, res) => {
     try {
         const { trainingId } = req.params;
@@ -41,5 +54,6 @@ const deleteTraining = async (req, res) => {
 module.exports = {
     createTraining,
     getAllTrainings,
-    deleteTraining
+    deleteTraining,
+    getTrainingById
 }

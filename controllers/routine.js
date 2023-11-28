@@ -53,7 +53,24 @@ const getRoutineById = async (req, res) => {
     }
 }
 
+const finishRoutine = async (req, res) => {
+    try{
+        const { routineId } = req.params
+        const routineData = {
+            finish: true,
+            date: Date.now()
+        }
+
+        await Routine.findByIdAndUpdate(routineId, routineData);
+        res.status(200).json({ message: "Rutina terminada",  })
+    }catch (error){
+      console.log(error)
+      res.status(400).json({error: error.message})
+    }
+  };
+
 module.exports = {
     createRoutine,
-    getRoutineById
+    getRoutineById,
+    finishRoutine
 }
