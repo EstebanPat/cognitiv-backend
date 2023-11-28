@@ -6,7 +6,7 @@ const suscriptionRoutes = require('./routes/suscription')
 const nonImTrainingRoutes = require('./routes/nonImTraining')
 const routineListRoutes = require('./routes/routineList')
 const routineRoutes = require("./routes/routine")
-
+const nonImTrainingInfoRoutes = require('./routes/nonImTrainingInfo')
 const cors = require('cors')
 
 require('dotenv').config()
@@ -33,6 +33,7 @@ app.use(`${process.env.API}${process.env.API_VERSION}suscriptions`, suscriptionR
 app.use(`${process.env.API}${process.env.API_VERSION}nonimtrainings`, nonImTrainingRoutes)
 app.use(`${process.env.API}${process.env.API_VERSION}routines`, routineListRoutes)
 app.use(`${process.env.API}${process.env.API_VERSION}routine`, routineRoutes)
+app.use(`${process.env.API}${process.env.API_VERSION}nonimtrainingsinfo`, nonImTrainingInfoRoutes)
 
 
 module.exports = app
