@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require('multer');
+const ensuAuth = require("../middleware/authenticated")
 
 const suscriptionController = require('../controllers/suscription')
 
@@ -17,6 +18,6 @@ const upload = multer({ storage: storage });
 router.post('/new-suscription', upload.single("voucher"), suscriptionController.createSuscription)
 router.get('/',  suscriptionController.getAllSuscriptions)
 router.get('/:subId',  suscriptionController.getById)
-router.delete("/delete/:suscriptionId", suscriptionController.deleteSuscription)
+router.delete("/delete/:suscriptionId", [ensuAuth.ensureAuth], suscriptionController.deleteSuscription)
 
 module.exports = router;

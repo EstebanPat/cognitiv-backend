@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
     schooling: { type: String, required: true },
     active: { type: Boolean, default: false},
     attendant: { type: mongoose.Schema.Types.Mixed },
-    rol: { type: String, default: "user" }
+    rol: { type: String, default: "user"}
 })
 
 module.exports = mongoose.model("User", userSchema)
