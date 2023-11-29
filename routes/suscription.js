@@ -19,5 +19,6 @@ router.post('/new-suscription', upload.single("voucher"), suscriptionController.
 router.get('/',  suscriptionController.getAllSuscriptions)
 router.get('/:subId',  suscriptionController.getById)
 router.delete("/delete/:suscriptionId", [ensuAuth.ensureAuth], suscriptionController.deleteSuscription)
+router.patch("/admin/activate/:subId", [ensuAuth.ensureAuth], suscriptionController.activeSuscription)
 
 module.exports = router;
