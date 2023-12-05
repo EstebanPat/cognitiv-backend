@@ -40,6 +40,24 @@ const createSuscription = async (req, res) => {
     } 
 }
 
+const activeSuscription = async (req, res) => {
+    try{
+        const { user_id } = req.user;
+        const auxUser = await User.findById(user_id) 
+        if(auxUser.rol !== "admin"){
+            res.status(403).send({ message: "Usuario no autorizado"})
+        }
+
+        const subData = req.body;
+        const { subId } = req.params
+        await Suscription.findByIdAndUpdate(subId, subData);
+        res.status(200).json({ message: "Suscripción actualizada",  })
+    }catch (error){
+        console.log(error)
+        res.status(400).json({error: error.message})
+    }
+}
+
 const getAllSuscriptions = async (req, res) => {
     try {
         const response = await Suscription.find()
@@ -82,5 +100,6 @@ module.exports = {
     createSuscription,
     getById,
     getAllSuscriptions,
-    deleteSuscription
+    deleteSuscription,
+    activeSuscription
 }

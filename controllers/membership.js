@@ -41,9 +41,6 @@ const getById = async (req, res) =>{
     } 
 };
 
-
-//Eliminar Categoria
-
 const deleteMembership = async (req, res) => {
     try {
         const { membershipId } = req.params
